@@ -1,13 +1,9 @@
-- Dlibの顔認証モデルについて説明
-  - dlib_face_recognition_resnet_model_v1.dat
-  - dlibベースの顔照合プログラムface_recognition
 
+# はじめに
 
-## はじめに
+Dlibの顔学習モデルである`dlib_face_recognition_resnet_model_v1.dat`の、若年日本人女性データセットにおける性能評価を行います。
 
-Dlibの顔学習モデルである`dlib_face_recognition_resnet_model_v1.dat`の性能評価を行います。
-
-## Dlibの歴史と特徴
+# Dlibの歴史と特徴
 
 Dlibは、元々はC++で書かれた機械学習とデータ解析のためのオープンソースライブラリです。2002年にDavis Kingによって開発が始まりました。Dlibは、顔認証の分野でよく知られていますが、その機能はそれだけにとどまりません。このライブラリは、画像処理、機械学習、自然言語処理、数値最適化といった多様なタスクに対応しています。C++で開発された本ライブラリはPythonバインディングも提供しています。[dlib(GitHub)](https://github.com/davisking/dlib)で、現在も開発が続けられています。
 
@@ -20,17 +16,19 @@ Labeled Faces in the Wild (LFW) データセットでの精度は99.38%と報告
 
 `face_recognition`は、Pythonで書かれた顔認証のためのライブラリで、Dlibの「`dlib_face_recognition_resnet_model_v1.dat`」を内部で使用しています。このライブラリは、Adam Geitgeyによって開発され、簡単なAPIで高度な顔認証が行えることから、多くのプロジェクトで使用されています。
 
-## `dlib_face_recognition_resnet_model_v1.dat`の性能評価
+# `dlib_face_recognition_resnet_model_v1.dat`の性能評価
 この様にさまざまな顔認証プロジェクトで活用されているDlibの顔学習モデルですが、若年日本人女性の顔画像に対しては、どの程度の精度が出るのでしょうか。このモデルの性能を評価するために、若年日本人女性の顔画像を用意し、ROC-AUCを計算しました。
-### 一般日本人に対しての性能評価
+## 一般日本人に対しての性能評価
 著名日本人の顔画像データベースから、ランダムに300枚の画像を選択し、一般日本人の顔画像データセットを作成しました。このデータセットに対して、`dlib_face_recognition_resnet_model_v1.dat`を用いて顔認証を行い、ROC-AUCを計算しました。その結果が以下になります。
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/一般日本人.png)
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/一般日本人_dlib_ROC.png)
+
 一般日本人に対して、`dlib_face_recognition_resnet_model_v1.dat`のAUCは0.98であり、非常に高い精度を示しています。
-### 若年日本人女性に対しての性能評価
-著名日本人の顔画像データベースから、とくに若年女性の顔画像をランダムに300枚選択し、若年日本人女性の顔画像データセットを作成しました。このデータセットに対して、`dlib_face_recognition_resnet_model_v1.dat`を用いて顔認証を行い、ROC-AUCを計算しました。その結果が以下になります。
+## 若年日本人女性に対しての性能評価
+今度は、著名日本人の顔画像データベースから、とくに若年女性の顔画像をランダムに300枚選択し、若年日本人女性の顔画像データセットを作成しました。このデータセットに対して、`dlib_face_recognition_resnet_model_v1.dat`を用いて顔認証を行い、ROC-AUCを計算しました。その結果が以下になります。
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/若年日本人女性.png)
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/若年日本人女性_dlib_ROC.png)
+
 一般日本人に対して、若年日本人女性の顔画像を用いて性能評価をしたところ、AUCが0.98から0.94に低下しました。
 これはDlibの顔学習モデルが、face scrub datasetやVGGデータセットを主に使用しているところが原因と考えられます。これらのデータセットには、若年日本人女性の顔画像がほとんど含まれていないため、若年日本人女性の顔画像に対しては、性能が低下すると考えられます。（[High Quality Face Recognition with Deep Metric Learning](http://blog.dlib.net/2017/02/high-quality-face-recognition-with-deep.html)を参照）
 
@@ -39,13 +37,14 @@ Labeled Faces in the Wild (LFW) データセットでの精度は99.38%と報告
 このモデルを使って、Dlibの学習モデルと比較した結果を以下に示します。
 ## 一般日本人に対しての性能評価
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/一般日本人_dlib_vs_japaneseFace_ROC.png)
+
 Dlibの学習モデルと比較して、AUCが0.98であり、同等の性能を示しています。
 
 ## 若年日本人女性に対しての性能評価
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/若年日本人女性_dlib_vs_japaneseFace_ROC.png)
 逆に、若年日本人女性の顔画像に対しては、DlibのAUCが0.94に対し、`JAPANESE FACE`は0.98を維持しています。
 
-## ROC-AUCグラフ作成コード
+# ROC-AUCグラフ作成コード
 それでは、ROC-AUCグラフを作成するコードを紹介します。
 Dlibは、類似度をユークリッド距離を使って計算します。対して`JAPANESE FACE`は、類似度をコサイン類似度を使って計算します。そのため、類似度計算は別関数として定義します。
 また、ROC曲線の計算と描画において、Dlibの類似度を負にする必要があります。Dlibの場合、ROC曲線の計算において、スコアが大きいほど、真陽性率が大きくなります。
@@ -165,12 +164,14 @@ plt.legend(loc="lower right")
 plt.show()
 ```
 
-## `F1-score`
+# `F1-score`
 続いて`F1-score`を比較します。こちらは若年日本人女性のデータセットのみを比較します。
-### Dlib
+## Dlib
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/若年日本人女性_dlib%20F1score,%20etc..png)
+
 Dlibのブログでは「The network training started with randomly initialized weights and used a structured metric loss that tries to project all the identities into non-overlapping balls of radius 0.6.」と書いてあるとおり、閾値を0.6としています。しかし、若年日本人女性のデータセットを対象とした場合、0.35が最適な閾値ということが、グラフから分かります。
 この場合でも、F1-scoreは0.55程度の、あまり高い値とは言えない結果となりました。
+### F1-scoreグラフ作成コード
 ```python
 import os
 from itertools import combinations
@@ -256,8 +257,9 @@ plt.legend()
 plt.grid(True)
 plt.show()
 ```
-### `JAPANESE FACE`
+## `JAPANESE FACE`
 ![](https://raw.githubusercontent.com/yKesamaru/dlib_vs_japaneseFace/master/img/若年日本人女性_JAPANESE%20FACE%20F1score.png)
+
 こちらのモデルでは、F1-scoreが0.8を超えています。これは、`JAPANESE FACE`が若年日本人女性のデータセットを用いて学習されているため、高い精度が出ていると考えられます。
 ### F1-scoreグラフ作成コード
 ```python
@@ -394,3 +396,7 @@ plt.show()
 ```
 
 # 考察・まとめ
+Dlibの顔学習モデルである`dlib_face_recognition_resnet_model_v1.dat`は、非常に高い精度を持っています。しかし、若年日本人女性の顔画像に対しては、精度が低下します。これは、Dlibの顔学習モデルが、face scrub datasetやVGGデータセットを主に使用しているところが原因と考えられます。これらのデータセットには、若年日本人女性の顔画像がほとんど含まれていないため、若年日本人女性の顔画像に対しては、性能が低下すると考えられます。
+この問題を解決するため、独自の日本人顔データセットを用いて学習したモデルが`JAPANESE FACE`です。このモデルは、Dlibの学習モデルと同等の性能を示し、若年日本人女性の顔画像に対しては、Dlibの学習モデルよりも高い精度を示します。この学習モデルは[FACE01_trained_models](https://github.com/yKesamaru/FACE01_trained_models)からダウンロードできます。
+
+https://github.com/yKesamaru/FACE01_trained_models
